@@ -1,0 +1,3 @@
+#cmakedefine USE_GET_ERROR
+#cmakedefine DEBUG_TIMING
+#cmakedefine DEBUG_WRAPPERS
