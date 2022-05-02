@@ -1,0 +1,9 @@
+[submodule "fmt"]
+	path = fmt
+	url = https://github.com/fmtlib/fmt
+[submodule "tinygltf"]
+	path = tinygltf
+	url = https://github.com/syoyo/tinygltf.git
+[submodule "gcem"]
+	path = gcem
+	url = https://github.com/kthohr/gcem.git
