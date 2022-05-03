@@ -7,3 +7,6 @@
 [submodule "gcem"]
 	path = gcem
 	url = https://github.com/kthohr/gcem.git
+[submodule "glm"]
+	path = glm
+	url = https://github.com/g-truc/glm.git

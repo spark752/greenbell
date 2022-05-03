@@ -5,23 +5,24 @@
 #if __cplusplus < 201703L
 #error "A C++17 compiler is required"
 #endif
-#include "glad.h"
 
+#include "cmake_config.h" 
+#include "glad.h"
 #include "types.h"
 #include <string_view>
 
-#ifdef DEBUG_WRAPPERS
-#include <fmt/printf.h>
+#ifdef DEBUG_WRAPPERS /* From cmake_config.h */
+#include "gb_fmt.h"
 #endif
 
 namespace Greenbell::GL {
 
 // Template base class for owning OpenGL objects
 constexpr auto BUFFER_CLASS_TEMPLATE = 0;
-constexpr auto PROGRAM_CLASS_TEMPLATE = 13;
-constexpr auto VAO_CLASS_TEMPLATE = 42;
-constexpr auto RBO_CLASS_TEMPLATE = 69;
-constexpr auto FBO_CLASS_TEMPLATE = 95;
+constexpr auto PROGRAM_CLASS_TEMPLATE = 1;
+constexpr auto VAO_CLASS_TEMPLATE = 2;
+constexpr auto RBO_CLASS_TEMPLATE = 3;
+constexpr auto FBO_CLASS_TEMPLATE = 4;
 template <int N>
 class GenericObject {
   public:
@@ -38,12 +39,12 @@ class GenericObject {
             glCreateBuffers(1, &id_);
         }
         #ifdef DEBUG_WRAPPERS        
-        fmt::printf("GenericObject %d ctor %d\n", N, id_);
+        fmt::print("GenericObject {} ctor {}\n", N, id_);
         #endif          
     }
     virtual ~GenericObject() noexcept {
         #ifdef DEBUG_WRAPPERS        
-        fmt::printf("GenericObject %d dtor %d\n", N, id_);
+        fmt::print("GenericObject {} dtor {}\n", N, id_);
         #endif        
         if constexpr (N == RBO_CLASS_TEMPLATE) {
             glDeleteRenderbuffers(1, &id_);
@@ -67,7 +68,7 @@ class GenericObject {
 
     GenericObject& operator=(GenericObject&& source) noexcept {
         #ifdef DEBUG_WRAPPERS        
-        fmt::printf("GenericObject assign %d replaced by %d\n", id_, 
+        fmt::print("GenericObject assign {} replaced by {}\n", id_, 
                 source.id_);
         #endif        
         if (&source == this) return *this; // Self assignment
@@ -150,12 +151,12 @@ class ShaderObject {
     ShaderObject() noexcept {
         id_ = glCreateShader(TARGET);
 #ifdef GL_WRAPPER_DEBUG        
-        fmt::printf("ShaderObject %d ctor %d\n", TARGET, id_);   
+        fmt::print("ShaderObject {} ctor {}\n", TARGET, id_);   
 #endif    
     }
     virtual ~ShaderObject() noexcept {
         #ifdef DEBUG_WRAPPERS        
-        fmt::printf("ShaderObject %d dtor %d\n", TARGET, id_);
+        fmt::print("ShaderObject {} dtor {}\n", TARGET, id_);
         #endif        
         glDeleteShader(id_); // Spec says value of 0 will be silently ignored
     }
@@ -169,7 +170,7 @@ class ShaderObject {
 
     ShaderObject& operator=(ShaderObject&& source) noexcept {
         #ifdef DEBUG_WRAPPERS        
-        fmt::printf("ShaderObject assign %d replaced by %d\n", id_, source.id_);
+        fmt::print("ShaderObject assign {} replaced by {}\n", id_, source.id_);
         #endif        
         if (&source == this) return *this; // Self assignment
         if (id_) {

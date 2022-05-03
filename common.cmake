@@ -25,10 +25,6 @@ set(PROJECT_WARNINGS
     -Wnull-dereference
     -Wdouble-promotion
 )
-set(PROJECT_OPTIMIZE
-    -O2 
-    -msse3
-)
 
 option(ENABLE_CLANG_TIDY "Enable static analysis with clang-tidy" OFF)
 if(ENABLE_CLANG_TIDY)

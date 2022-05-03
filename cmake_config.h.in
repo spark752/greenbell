@@ -1,3 +1,8 @@
 #cmakedefine USE_GET_ERROR
 #cmakedefine DEBUG_TIMING
 #cmakedefine DEBUG_WRAPPERS
+#cmakedefine GLM_FORCE_MESSAGES
+#cmakedefine GLM_FORCE_SSE2
+#cmakedefine GLM_FORCE_SSE3
+#cmakedefine GLM_FORCE_AVX
+#cmakedefine GLM_FORCE_INTRINSICS

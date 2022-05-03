@@ -3,11 +3,17 @@ project(Greenbell)
 
 include(common.cmake)
 
-option(DEBUG_TIMING "Show timing info from threads. DEBUG ONLY" OFF)
-option(DEBUG_AUDIO "Show debug info for audio. DEBUG ONLY" OFF)
+option(DEBUG_TIMING "Show timing info from threads DEBUG ONLY" OFF)
+option(DEBUG_AUDIO "Show debug info for audio DEBUG ONLY" OFF)
+option(DEBUG_WRAPPERS "Show debug info for library wrappers DEBUG ONLY" OFF) 
 option(USE_GET_ERROR "Include glGetError calls for debugging" ON)
 option(BUILD_DEMO_APPS "Build optional demo applications" ON)
 option(BUILD_TEST_APPS "Build test applications" ON)
+option(GLM_FORCE_MESSAGES "Lots of GLM output as warnings DEBUG ONLY" OFF)
+option(GLM_FORCE_SSE2 "Force SSE2 support for GLM library" OFF)
+option(GLM_FORCE_SSE3 "Force SSE3 support for GLM library" OFF)
+option(GLM_FORCE_AVX "Force AVX support for GLM library" OFF)
+option(GLM_FORCE_INTRINSICS "Enable GLM SIMD support based on compiler flags" ON)
 
 find_library(SDL_LIB SDL2)
 message(STATUS "SDL2: ${SDL_LIB}")
@@ -32,7 +38,13 @@ add_library(greenbell STATIC
     ${GLAD_SRC}
 )
 
-# PROJECT_WARNINGS and PROJECT_OPTIMIZE come from the common.cmake file
+# Optimization could include SIMD setting. -msse2 should be the default.
+# The application will probably need to be built the same way.
+set(PROJECT_OPTIMIZE
+    -O2
+)
+
+# PROJECT_WARNINGS comes from common.cmake
 target_compile_options(greenbell PRIVATE ${PROJECT_WARNINGS} ${PROJECT_OPTIMIZE})
 target_link_libraries(greenbell
     INTERFACE ${DL_LIB} ${SDL_LIB} ${SDL_TTF} ${PTHREAD_LIB}
@@ -65,6 +77,18 @@ if (BUILD_TEST_APPS)
     add_subdirectory(tests)
 endif()
 
+# Installation
+install(TARGETS greenbell EXPORT greenbell-targets
+    DESTINATION .
+)
+install(EXPORT greenbell-targets FILE greenbell-targets.cmake
+    DESTINATION .
+)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
+    DESTINATION GB
+    FILES_MATCHING PATTERN "*.h"
+)
+
 # Package
 # This allows projects to find_package Greenbell and know its dependencies
 include(CMakePackageConfigHelpers)
@@ -78,4 +102,10 @@ write_basic_package_version_file(
     "${CMAKE_CURRENT_BINARY_DIR}/greenbell-config-version.cmake"
     VERSION "0.1"
     COMPATIBILITY AnyNewerVersion
+)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/greenbell-config.cmake
+    DESTINATION .
+)
+export(EXPORT greenbell-targets
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/greenbell-targets.cmake"
 )
