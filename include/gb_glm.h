@@ -22,7 +22,7 @@
 // GLM_FORCE_SSE2 = Base level supported by all x86_64 architecture.
 //      Compiler support is through the -msse2 flag which should be default.
 // GLM_FORCE_SSE3 = Introduced in 2003 and has been required for Google Chrome
-//      since early 2021 so should also be widely supported. 
+//      since early 2021 so should also be widely supported.
 //      Compiler support is through the -msse3 flag.
 // GLM_FORCE_AVX = Available since 2011, but several recent AAA games released
 //      with AVX and ended up patching it out after customer complaints.

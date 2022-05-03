@@ -2,8 +2,8 @@
 #ifndef GB_TYPES_H
 #define GB_TYPES_H
 
-#include <cstdint>
-#include <cstring>
+#include <cstdint> /* Fixed width types */
+#include <cstddef> /* size_t */
 
 using std::int16_t;
 using std::int32_t;

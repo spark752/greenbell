@@ -9,7 +9,8 @@
 // The std math library does not have constexpr but this one does.
 // Unfortunately it gives some warnings with Clang 11
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wimplicit-int-float-conversion"    
+#pragma clang diagnostic ignored "-Wimplicit-int-float-conversion"
+#pragma clang diagnostic ignored "-Wfloat-equal"
 #include "../gcem/include/gcem.hpp"
 #pragma clang diagnostic pop
 
@@ -37,8 +38,8 @@ struct Vec4 {
     float z;
     float w;
     constexpr Vec4() noexcept : x{0.0f}, y{0.0f}, z{0.0f}, w{0.0f} {}
-    constexpr Vec4(float a, float b, float c, float d) noexcept : 
-            x{a}, y{b}, z{c}, w{d} {}         
+    constexpr Vec4(float a, float b, float c, float d) noexcept :
+            x{a}, y{b}, z{c}, w{d} {}
 };
 constexpr Vec4 operator* (Vec4 const& v, float a) {
     return Vec4{v.x * a, v.y * a, v.z * a, v.w * a};
@@ -50,7 +51,7 @@ constexpr Vec4 operator* (float a, Vec4 const& v) {
 
 namespace Greenbell::Math {
 
-// glm has "convertSRGBToLinear" and "convertLinearToSRGB" but they use standard 
+// glm has "convertSRGBToLinear" and "convertLinearToSRGB" but they use standard
 // cmath library so are not constexpr even when the glm vectors are
 constexpr float SRGBToLinear(const float in) noexcept {
     // From sRGB spec https://www.w3.org/Graphics/Color/srgb
@@ -71,25 +72,25 @@ constexpr float LinearToSRGB(const float in) noexcept {
 }
 
 constexpr Vec3 SRGBToLinear(Vec3 const& in) noexcept {
-    return Vec3{SRGBToLinear(in.x), SRGBToLinear(in.y), 
+    return Vec3{SRGBToLinear(in.x), SRGBToLinear(in.y),
             SRGBToLinear(in.z)};
 }
 constexpr Vec4 SRGBToLinear(Vec4 const& in) noexcept {
-    return Vec4{SRGBToLinear(in.x), SRGBToLinear(in.y), 
+    return Vec4{SRGBToLinear(in.x), SRGBToLinear(in.y),
             SRGBToLinear(in.z), in.w};
 }
 constexpr Vec3 LinearToSRGB(Vec3 const& in) noexcept {
-    return Vec3{LinearToSRGB(in.x), LinearToSRGB(in.y), 
+    return Vec3{LinearToSRGB(in.x), LinearToSRGB(in.y),
             LinearToSRGB(in.z)};
 }
 constexpr Vec4 LinearToSRGB(Vec4 const& in) noexcept {
-    return Vec4{LinearToSRGB(in.x), LinearToSRGB(in.y), 
+    return Vec4{LinearToSRGB(in.x), LinearToSRGB(in.y),
             LinearToSRGB(in.z), in.w};
 }
 
 constexpr Vec3 TemperatureToColour(const float temperature,
         const bool linear = true) noexcept {
-    // From an algorithm by Tanner Helland based on the chart by Mitchell 
+    // From an algorithm by Tanner Helland based on the chart by Mitchell
     // Charity on vendian.org.
     // The algorithm approximates the 0-255 "rgb" values on the chart which
     // seem to be in sRGB colour space. The chart also has floats which seem
@@ -123,7 +124,7 @@ constexpr Vec3 TemperatureToColour(const float temperature,
     } else {
         green = std::clamp(gc * gcem::pow((dk - 60.0), gd), 0.0, 1.0);
     }
-    
+
     const auto ba = -1.19625409;
     const auto bb = 0.54320679;
     double blue = 1.0;
@@ -135,8 +136,8 @@ constexpr Vec3 TemperatureToColour(const float temperature,
             if (linear) blue = gcem::pow(blue, 2.2); // Approximate gamma
         }
     }
-  
-    return Vec3{static_cast<float>(red), static_cast<float>(green), 
+
+    return Vec3{static_cast<float>(red), static_cast<float>(green),
             static_cast<float>(blue)};
 }
 

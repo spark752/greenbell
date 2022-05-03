@@ -6,7 +6,7 @@
 #error "A C++17 compiler is required"
 #endif
 
-#include "cmake_config.h" 
+#include "cmake_config.h"
 #include "glad.h"
 #include "types.h"
 #include <string_view>
@@ -18,11 +18,11 @@
 namespace Greenbell::GL {
 
 // Template base class for owning OpenGL objects
-constexpr auto BUFFER_CLASS_TEMPLATE = 0;
-constexpr auto PROGRAM_CLASS_TEMPLATE = 1;
-constexpr auto VAO_CLASS_TEMPLATE = 2;
-constexpr auto RBO_CLASS_TEMPLATE = 3;
-constexpr auto FBO_CLASS_TEMPLATE = 4;
+inline constexpr auto BUFFER_CLASS_TEMPLATE = 0;
+inline constexpr auto PROGRAM_CLASS_TEMPLATE = 1;
+inline constexpr auto VAO_CLASS_TEMPLATE = 2;
+inline constexpr auto RBO_CLASS_TEMPLATE = 3;
+inline constexpr auto FBO_CLASS_TEMPLATE = 4;
 template <int N>
 class GenericObject {
   public:
@@ -38,14 +38,14 @@ class GenericObject {
         } else {
             glCreateBuffers(1, &id_);
         }
-        #ifdef DEBUG_WRAPPERS        
+        #ifdef DEBUG_WRAPPERS
         fmt::print("GenericObject {} ctor {}\n", N, id_);
-        #endif          
+        #endif
     }
     virtual ~GenericObject() noexcept {
-        #ifdef DEBUG_WRAPPERS        
+        #ifdef DEBUG_WRAPPERS
         fmt::print("GenericObject {} dtor {}\n", N, id_);
-        #endif        
+        #endif
         if constexpr (N == RBO_CLASS_TEMPLATE) {
             glDeleteRenderbuffers(1, &id_);
         } else if constexpr (N == FBO_CLASS_TEMPLATE) {
@@ -53,12 +53,12 @@ class GenericObject {
         } else if constexpr (N == VAO_CLASS_TEMPLATE) {
             glDeleteVertexArrays(1, &id_);
         } else if constexpr (N == PROGRAM_CLASS_TEMPLATE) {
-            glDeleteProgram(id_);         
+            glDeleteProgram(id_);
         } else {
             glDeleteBuffers(1, &id_);
         }
     }
-    
+
     GenericObject(const GenericObject&) = delete;            // No copy
     GenericObject& operator=(const GenericObject&) = delete; // No copy assign
 
@@ -67,10 +67,10 @@ class GenericObject {
     } // Move
 
     GenericObject& operator=(GenericObject&& source) noexcept {
-        #ifdef DEBUG_WRAPPERS        
-        fmt::print("GenericObject assign {} replaced by {}\n", id_, 
+        #ifdef DEBUG_WRAPPERS
+        fmt::print("GenericObject assign {} replaced by {}\n", id_,
                 source.id_);
-        #endif        
+        #endif
         if (&source == this) return *this; // Self assignment
         if (id_) {
             // We are moving into this. If it already has a buffer, delete
@@ -96,14 +96,14 @@ class GenericObject {
     explicit operator bool() const noexcept {
         return id_;
     }
-    
+
     // Get the object "name" for use with OpenGL calls
     auto name() const noexcept {
         return id_;
     }
-            
+
   protected:
-    uint32_t id_{0};
+    GLuint id_{0};
 };
 typedef GenericObject<RBO_CLASS_TEMPLATE> RBO;
 typedef GenericObject<FBO_CLASS_TEMPLATE> FBO;
@@ -117,7 +117,7 @@ class BufferObject : public GenericObject<BUFFER_CLASS_TEMPLATE> {
         glBindBuffer(TARGET, id_);
     }
     void unbind() const noexcept {
-        glBindBuffer(TARGET, id_);
+        glBindBuffer(TARGET, 0);
     }
 };
 typedef BufferObject<GL_ARRAY_BUFFER> VBO;
@@ -131,6 +131,9 @@ class VAO : public GenericObject<VAO_CLASS_TEMPLATE> {
     void bind() const noexcept {
         glBindVertexArray(id_);
     }
+    void unbind() const noexcept {
+        glBindVertexArray(0);
+    }
 };
 
 // Class for owning a shader Program Object
@@ -140,24 +143,35 @@ class ProgramObject : public GenericObject<PROGRAM_CLASS_TEMPLATE> {
     void use() const noexcept {
          glUseProgram(id_);
     }
+    void link() const noexcept {
+        glLinkProgram(id_);
+    }
+    bool get_link_status() const noexcept {
+        GLint ret;
+        glGetProgramiv(id_, GL_LINK_STATUS, &ret);
+        return (ret == GL_TRUE);
+    }
+    void attach(GLuint shader_id) const noexcept {
+        if (shader_id && id_) glAttachShader(id_, shader_id);
+    }
 };
 
 // Template class for owning OpenGL shader objects.
-// Instantations for common types have typedefs below but derived classes are 
+// Instantations for common types have typedefs below but derived classes are
 // also possible.
 template <GLenum TARGET>
 class ShaderObject {
   public:
     ShaderObject() noexcept {
         id_ = glCreateShader(TARGET);
-#ifdef GL_WRAPPER_DEBUG        
-        fmt::print("ShaderObject {} ctor {}\n", TARGET, id_);   
-#endif    
+#ifdef GL_WRAPPER_DEBUG
+        fmt::print("ShaderObject {} ctor {}\n", TARGET, id_);
+#endif
     }
     virtual ~ShaderObject() noexcept {
-        #ifdef DEBUG_WRAPPERS        
+        #ifdef DEBUG_WRAPPERS
         fmt::print("ShaderObject {} dtor {}\n", TARGET, id_);
-        #endif        
+        #endif
         glDeleteShader(id_); // Spec says value of 0 will be silently ignored
     }
 
@@ -169,9 +183,9 @@ class ShaderObject {
     } // Move
 
     ShaderObject& operator=(ShaderObject&& source) noexcept {
-        #ifdef DEBUG_WRAPPERS        
+        #ifdef DEBUG_WRAPPERS
         fmt::print("ShaderObject assign {} replaced by {}\n", id_, source.id_);
-        #endif        
+        #endif
         if (&source == this) return *this; // Self assignment
         if (id_) {
             // We are moving into this. If it already has a shader, delete
@@ -198,39 +212,39 @@ class ShaderObject {
         // OpenGL takes a pointer to an array of null terminated strings
         auto p_array = p_source;
         glShaderSource(id_, 1, static_cast<const GLchar**>(&p_array), nullptr);
-        
+
         // OpenGL will set the shader status and info log
         glCompileShader(id_);
     }
     void compile(std::string_view source) const noexcept {
         // OpenGL takes a pointer to an array of strings + array of lengths
         auto p_array = source.data();
-        auto len = static_cast<int32_t>(source.length());
+        auto len = static_cast<GLint>(source.length());
         glShaderSource(id_, 1, static_cast<const GLchar**>(&p_array), &len);
-        
+
         // OpenGL will set the shader status and info log
         glCompileShader(id_);
     }
-     
+
     // Get the compile status via glGetShaderiv
     bool get_compile_status() const noexcept {
-        int32_t ret;
+        GLint ret;
         glGetShaderiv(id_, GL_COMPILE_STATUS, &ret);
         return (ret == GL_TRUE);
     }
-        
+
     // Attach the shader to a given program
-    void attach(uint32_t pid) const noexcept {
+    void attach(GLuint pid) const noexcept {
         if (pid && id_) glAttachShader(pid, id_);
     }
-        
+
     // Detach the shader from the given program
-    void detach(uint32_t pid) const noexcept {
+    void detach(GLuint pid) const noexcept {
         if (pid && id_) glDetachShader(pid, id_);
     }
-    
+
   protected:
-    uint32_t id_{0};
+    GLuint id_{0};
 };
 typedef ShaderObject<GL_VERTEX_SHADER> VertexShader;
 typedef ShaderObject<GL_FRAGMENT_SHADER> FragmentShader;
@@ -250,8 +264,8 @@ inline void DepthTest(bool enable) noexcept {
 }
 inline void Blend(bool enable) noexcept {
     if (enable) {
-        glEnable(GL_BLEND); 
-    } else { 
+        glEnable(GL_BLEND);
+    } else {
         glDisable(GL_BLEND);
     }
 }

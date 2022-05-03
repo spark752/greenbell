@@ -39,7 +39,7 @@ inline void Write(LogLevel level, std::string_view sv) {
         } else {
             std::cout << sv << "\n";
         }
-    }    
+    }
 }
 
 template<typename T, typename... Args>

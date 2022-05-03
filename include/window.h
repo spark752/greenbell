@@ -14,28 +14,28 @@ enum class MSAA { OFF, X2, X4, X8, X16 };
 // Use whichever glad header was included to try and figure out a good default
 // OpenGL version
 #if defined(GL_VERSION_4_6)
-static constexpr auto OGL_MAJOR_DEFAULT = 4;
-static constexpr auto OGL_MINOR_DEFAULT = 6;
+inline constexpr auto OGL_MAJOR_DEFAULT = 4;
+inline constexpr auto OGL_MINOR_DEFAULT = 6;
 #elif defined(GL_VERSION_4_5)
-static constexpr auto OGL_MAJOR_DEFAULT = 4;
-static constexpr auto OGL_MINOR_DEFAULT = 5;
+inline constexpr auto OGL_MAJOR_DEFAULT = 4;
+inline constexpr auto OGL_MINOR_DEFAULT = 5;
 #elif defined(GL_VERSION_4_4)
-static constexpr auto OGL_MAJOR_DEFAULT = 4;
-static constexpr auto OGL_MINOR_DEFAULT = 4;
+inline constexpr auto OGL_MAJOR_DEFAULT = 4;
+inline constexpr auto OGL_MINOR_DEFAULT = 4;
 #elif defined(GL_VERSION_4_3)
-static constexpr auto OGL_MAJOR_DEFAULT = 4;
-static constexpr auto OGL_MINOR_DEFAULT = 3;
+inline constexpr auto OGL_MAJOR_DEFAULT = 4;
+inline constexpr auto OGL_MINOR_DEFAULT = 3;
 #else
-static constexpr auto OGL_MAJOR_DEFAULT = 3;
-static constexpr auto OGL_MINOR_DEFAULT = 3;
+inline constexpr auto OGL_MAJOR_DEFAULT = 3;
+inline constexpr auto OGL_MINOR_DEFAULT = 3;
 #endif
 
-static constexpr auto LIMITER_DISABLE = std::chrono::microseconds(0);
-static constexpr auto LIMITER_100_FPS = std::chrono::microseconds(10000);
-static constexpr auto LIMITER_200_FPS = std::chrono::microseconds(5000);
-static constexpr auto LIMITER_300_FPS = std::chrono::microseconds(3333);
-static constexpr auto LIMITER_400_FPS = std::chrono::microseconds(2500);
-static constexpr auto LIMITER_500_FPS = std::chrono::microseconds(2000);
+inline constexpr auto LIMITER_DISABLE = std::chrono::microseconds(0);
+inline constexpr auto LIMITER_100_FPS = std::chrono::microseconds(10000);
+inline constexpr auto LIMITER_200_FPS = std::chrono::microseconds(5000);
+inline constexpr auto LIMITER_300_FPS = std::chrono::microseconds(3333);
+inline constexpr auto LIMITER_400_FPS = std::chrono::microseconds(2500);
+inline constexpr auto LIMITER_500_FPS = std::chrono::microseconds(2000);
 
 struct WindowInfo {
     std::string title{"Greenbell"};
@@ -68,22 +68,22 @@ class Window {
     // Call at start of frame before rendering. Required so that frame time
     // can be measured for statistics and the soft frame limiter.
     void start_frame() const noexcept;
-    
+
     // Call when finished rendering to swap the frame to output, invoke the
     // soft frame limiter (if min_duration > 0), and return frame duration.
-    // The return duration is the time since the previous call to start_frame 
-    // not including any delay by the soft frame limiter. However this will 
+    // The return duration is the time since the previous call to start_frame
+    // not including any delay by the soft frame limiter. However this will
     // include the delay by vsync if it is enabled.
     std::chrono::microseconds end_frame(
             std::chrono::microseconds min_duration) const noexcept;
-            
+
     // Get information about the window
     float aspect_ratio() const noexcept;
     int32_t width() const noexcept {return win_info_.width;}
     int32_t height() const noexcept {return win_info_.height;}
     int32_t x() const noexcept {return win_info_.x;}
     int32_t y() const noexcept {return win_info_.y;}
-    
+
   protected:
     mutable std::chrono::time_point<std::chrono::steady_clock> time_point_;
     WindowInfo win_info_;

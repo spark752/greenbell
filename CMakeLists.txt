@@ -35,16 +35,11 @@ set(GLAD_INCLUDE include/glad)
 add_library(greenbell STATIC
     engine/window.cpp
     engine/log.cpp
+    engine/shader.cpp
     ${GLAD_SRC}
 )
 
-# Optimization could include SIMD setting. -msse2 should be the default.
-# The application will probably need to be built the same way.
-set(PROJECT_OPTIMIZE
-    -O2
-)
-
-# PROJECT_WARNINGS comes from common.cmake
+# PROJECT_WARNINGS and PROJECT_OPTIMIZE comes from common.cmake
 target_compile_options(greenbell PRIVATE ${PROJECT_WARNINGS} ${PROJECT_OPTIMIZE})
 target_link_libraries(greenbell
     INTERFACE ${DL_LIB} ${SDL_LIB} ${SDL_TTF} ${PTHREAD_LIB}

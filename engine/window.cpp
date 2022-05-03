@@ -35,7 +35,7 @@ class SDLWindowWrapper {
         p_sdl_window_ = SDL_CreateWindow(win_info.title.c_str(), win_info.x,
                 win_info.y, win_info.width, win_info.height, flags);
         if (!p_sdl_window_) throw SDLException();
-        
+
         // Create context
         ogl_context_ = SDL_GL_CreateContext(p_sdl_window_);
         if (!ogl_context_) throw SDLException();
@@ -93,7 +93,7 @@ Window::Window(WindowInfo win_info) : win_info_(std::move(win_info)) {
     // Except it causes context creation to fail with some drivers.
     // So we call "glEnable(GL_FRAMEBUFFER_SRGB)" after context creation
     // which seems to be enough for OpenGL.
-    
+
     // Initialize SDL, create window, create OpenGL context
     ps_win_ = std::make_unique<SDLWindowWrapper>(win_info_);
 
@@ -120,7 +120,7 @@ Window::Window(WindowInfo win_info) : win_info_(std::move(win_info)) {
 
     // Load OpenGL functions
     // Use Glad as an OpenGL loading library
-    if (!gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress)) {
+    if (!gladLoadGLLoader(static_cast<GLADloadproc>(SDL_GL_GetProcAddress))) {
         Log::Write(LOG_ERROR, "OpenGL interface load failed");
         throw std::runtime_error("Error creating window");
     }
@@ -167,16 +167,16 @@ std::chrono::microseconds Window::end_frame(
         std::chrono::microseconds min_duration) const noexcept {
     // Send the OpenGL buffer to the SDL window
     ps_win_->swap_window();
-    
+
     // Duration since last update to time_point_
     const auto now = std::chrono::steady_clock::now();
     const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
-            now - time_point_);  
-    
+            now - time_point_);
+
     // Soft frame limiter
     if (min_duration != LIMITER_DISABLE) {
         // Shave a bit off the wait for system overhead
-        constexpr auto LIMITER_TWEAK = std::chrono::microseconds(100);
+        static constexpr auto LIMITER_TWEAK = std::chrono::microseconds(100);
         const auto wait = min_duration - duration - LIMITER_TWEAK;
         // Skip the wait completely for short durations. Note that sleeping
         // a negative amount is allowed and should return immediately, but
@@ -184,7 +184,7 @@ std::chrono::microseconds Window::end_frame(
         if (wait > LIMITER_TWEAK) {
             std::this_thread::sleep_for(wait);
         }
-    }        
+    }
     return duration;
 }
 

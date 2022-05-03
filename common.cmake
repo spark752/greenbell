@@ -18,12 +18,45 @@ set(PROJECT_WARNINGS
     -Wshadow
     -Wnon-virtual-dtor
     -Wcast-align
+    -Wcast-qual
     -Woverloaded-virtual
     -Wpedantic
     -Wconversion
-    -Wsign-conversion
     -Wnull-dereference
     -Wdouble-promotion
+    -Wdeprecated
+    -Wenum-conversion
+    -Wfloat-conversion
+    -Wfloat-equal
+    -Wfloat-overflow-conversion
+    -Wfloat-zero-conversion
+    -Wheader-hygiene
+    -Wmisleading-indentation
+    -Wmissing-braces
+    -Wmove
+    -Wnarrowing
+    -Wnested-anon-types
+    -Wold-style-cast
+    -Wpessimizing-move
+    -Wpointer-arith
+    -Wself-assign
+    -Wshorten-64-to-32
+    -Wsign-compare
+    -Wsign-conversion
+    -Wstring-conversion
+    -Wsuggest-destructor-override
+    -Wsuggest-override
+    -Wundef
+    -Wunneeded-member-function
+    -Wunreachable-code 
+    -Wzero-length-array
+)
+
+
+# Optimization could include SIMD setting. -msse2 should be the default.
+# The application will probably need to be built the same way.
+set(PROJECT_OPTIMIZE
+    -O2
 )
 
 option(ENABLE_CLANG_TIDY "Enable static analysis with clang-tidy" OFF)
