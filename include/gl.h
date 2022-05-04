@@ -32,7 +32,7 @@ class GenericObject {
         } else if constexpr (N == FBO_CLASS_TEMPLATE) {
             glCreateFramebuffers(1, &id_);
         } else if constexpr (N == VAO_CLASS_TEMPLATE) {
-            glGenVertexArrays(1, &id_);
+            glCreateVertexArrays(1, &id_);
         } else if constexpr (N == PROGRAM_CLASS_TEMPLATE) {
             id_ = glCreateProgram();
         } else {
@@ -152,7 +152,10 @@ class ProgramObject : public GenericObject<PROGRAM_CLASS_TEMPLATE> {
         return (ret == GL_TRUE);
     }
     void attach(GLuint shader_id) const noexcept {
-        if (shader_id && id_) glAttachShader(id_, shader_id);
+        glAttachShader(id_, shader_id);
+    }
+    void detach(GLuint shader_id) const noexcept {
+        glDetachShader(id_, shader_id);
     }
 };
 
@@ -174,14 +177,11 @@ class ShaderObject {
         #endif
         glDeleteShader(id_); // Spec says value of 0 will be silently ignored
     }
-
     ShaderObject(const ShaderObject&) = delete;            // No copy
     ShaderObject& operator=(const ShaderObject&) = delete; // No copy assign
-
     ShaderObject(ShaderObject&& source) noexcept : id_{source.id_} {
         source.id_ = 0;
     } // Move
-
     ShaderObject& operator=(ShaderObject&& source) noexcept {
         #ifdef DEBUG_WRAPPERS
         fmt::print("ShaderObject assign {} replaced by {}\n", id_, source.id_);
@@ -197,17 +197,12 @@ class ShaderObject {
         return *this;
     } // Move assign
 
-    // Check for valid ID easily
     explicit operator bool() const noexcept {
         return id_;
     }
-
-    // Get the shader "name" for use with OpenGL calls
     auto name() const noexcept {
         return id_;
     }
-
-    // Compile the shader
     void compile(const char* p_source) const noexcept {
         // OpenGL takes a pointer to an array of null terminated strings
         auto p_array = p_source;
@@ -225,22 +220,16 @@ class ShaderObject {
         // OpenGL will set the shader status and info log
         glCompileShader(id_);
     }
-
-    // Get the compile status via glGetShaderiv
     bool get_compile_status() const noexcept {
         GLint ret;
         glGetShaderiv(id_, GL_COMPILE_STATUS, &ret);
         return (ret == GL_TRUE);
     }
-
-    // Attach the shader to a given program
     void attach(GLuint pid) const noexcept {
-        if (pid && id_) glAttachShader(pid, id_);
+        glAttachShader(pid, id_);
     }
-
-    // Detach the shader from the given program
     void detach(GLuint pid) const noexcept {
-        if (pid && id_) glDetachShader(pid, id_);
+        glDetachShader(pid, id_);
     }
 
   protected:

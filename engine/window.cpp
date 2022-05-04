@@ -25,6 +25,14 @@ class SDLWindowWrapper {
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
                 SDL_GL_CONTEXT_PROFILE_CORE);
 
+        // It may be necessary to call this:
+        SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
+        // to allow calling "glEnable(GL_FRAMEBUFFER_SRGB)" if automatic 
+        // conversion from linear to sRGB is desired for the window. 
+        // This was causing context creation to fail with some drivers a few 
+        // years ago and the glEnable command worked without it. But it seems
+        // ok now?
+
         uint32_t flags =
                 SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
         if (win_info.fullscreen) {
@@ -86,13 +94,6 @@ Window::Window(WindowInfo win_info) : win_info_(std::move(win_info)) {
         throw std::runtime_error(
                 "OpenGL versions less than 4 are not supported");
     }
-
-    // We want an SRGB framebuffer which means doing this before creating the
-    // window would be the right thing:
-    // SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
-    // Except it causes context creation to fail with some drivers.
-    // So we call "glEnable(GL_FRAMEBUFFER_SRGB)" after context creation
-    // which seems to be enough for OpenGL.
 
     // Initialize SDL, create window, create OpenGL context
     ps_win_ = std::make_unique<SDLWindowWrapper>(win_info_);

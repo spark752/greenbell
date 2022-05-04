@@ -6,15 +6,24 @@
 
 namespace Greenbell::Shader {
 
-// Initialize a program from two string based shaders
-void InitProgram(GLuint pid, std::string_view vertex_source,
+// Build a program from two string based shaders
+void Build(GLuint pid, std::string_view vertex_source,
         std::string_view fragment_source);
 
-// Initialize a program specifically for use as an overlay
-void InitOverlayProgram(GLuint pid);
+// Build a simple program for a UV mapped quad overlay
+// This version will just sample from texture unit 0 and render the results
+// like "frag=texture(tex0,fuv)"
+void BuildOverlay(GLuint pid);
+// This version will use user provided contents for the body of main() to
+// replace the function above 
+void BuildOverlay(GLuint pid, std::string_view main);
 
-// Print an error log for a shader or program object
-void PrintLog(GLuint object);
+// Build a compute shader
+void BuildCompute(GLuint pid, std::string_view source);
+
+// Print an error log for compiling a shader or linking a program
+void PrintShaderLog(GLuint shader_id);
+void PrintProgramLog(GLuint pid);
 
 } // namespace Greenbell::Shader
 
