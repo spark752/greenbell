@@ -54,7 +54,7 @@ void Build(GLuint pid, std::string_view vertex_source,
 }
 
 void BuildOverlay(GLuint pid) {
-    BuildOverlay(pid, "  frag=texture(tex0,fuv);\n");
+    BuildOverlay(pid, "  frag=texture(tex,fuv);\n");
 }
     
 void BuildOverlay(GLuint pid, std::string_view main) {
@@ -71,10 +71,10 @@ void BuildOverlay(GLuint pid, std::string_view main) {
             "{}"
             "out vec4 frag;\n"
             "in vec2 fuv;\n"
-            "layout(binding = 0) uniform sampler2D tex0;\n"
+            "layout(binding = {}) uniform sampler2D tex;\n"
             "void main() {{\n"
             "{}"
-            "}}\n", GLSL_VERSION, main);
+            "}}\n", GLSL_VERSION, TEXBIND_OVERLAY, main);
     Build(pid, vs, fs);
 }
 

@@ -39,12 +39,12 @@ class GenericObject {
             glCreateBuffers(1, &id_);
         }
         #ifdef DEBUG_WRAPPERS
-        fmt::print("GenericObject {} ctor {}\n", N, id_);
+        fmt::print(FMT_STRING("GenericObject {} ctor {}\n"), N, id_);
         #endif
     }
     virtual ~GenericObject() noexcept {
         #ifdef DEBUG_WRAPPERS
-        fmt::print("GenericObject {} dtor {}\n", N, id_);
+        fmt::print(FMT_STRING("GenericObject {} dtor {}\n"), N, id_);
         #endif
         if constexpr (N == RBO_CLASS_TEMPLATE) {
             glDeleteRenderbuffers(1, &id_);
@@ -68,7 +68,7 @@ class GenericObject {
 
     GenericObject& operator=(GenericObject&& source) noexcept {
         #ifdef DEBUG_WRAPPERS
-        fmt::print("GenericObject assign {} replaced by {}\n", id_,
+        fmt::print(FMT_STRING("GenericObject assign {} replaced by {}\n"), id_,
                 source.id_);
         #endif
         if (&source == this) return *this; // Self assignment
@@ -168,12 +168,12 @@ class ShaderObject {
     ShaderObject() noexcept {
         id_ = glCreateShader(TARGET);
 #ifdef GL_WRAPPER_DEBUG
-        fmt::print("ShaderObject {} ctor {}\n", TARGET, id_);
+        fmt::print(FMT_STRING("ShaderObject {} ctor {}\n"), TARGET, id_);
 #endif
     }
     virtual ~ShaderObject() noexcept {
         #ifdef DEBUG_WRAPPERS
-        fmt::print("ShaderObject {} dtor {}\n", TARGET, id_);
+        fmt::print(FMT_STRING("ShaderObject {} dtor {}\n"), TARGET, id_);
         #endif
         glDeleteShader(id_); // Spec says value of 0 will be silently ignored
     }
@@ -184,7 +184,8 @@ class ShaderObject {
     } // Move
     ShaderObject& operator=(ShaderObject&& source) noexcept {
         #ifdef DEBUG_WRAPPERS
-        fmt::print("ShaderObject assign {} replaced by {}\n", id_, source.id_);
+        fmt::print(FMT_STRING("ShaderObject assign {} replaced by {}\n"), id_, 
+                source.id_);
         #endif
         if (&source == this) return *this; // Self assignment
         if (id_) {
@@ -268,7 +269,7 @@ inline void Viewport(GLint x, GLint y, GLsizei width, GLsizei height) {
     glViewport(x, y, width, height);
 }
 inline void Clear() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void ShowSystemInfo(); // In .cpp file

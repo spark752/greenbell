@@ -36,6 +36,7 @@ add_library(greenbell STATIC
     engine/window.cpp
     engine/log.cpp
     engine/shader.cpp
+    engine/thread_pool.cpp
     ${GLAD_SRC}
 )
 

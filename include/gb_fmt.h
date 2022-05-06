@@ -8,6 +8,6 @@
 #define FMT_HEADER_ONLY
 #include "../fmt/include/fmt/core.h"
 #include "../fmt/include/fmt/color.h"
-#include "../fmt/include/fmt/printf.h"
+#include "../fmt/include/fmt/chrono.h"
 
 #endif

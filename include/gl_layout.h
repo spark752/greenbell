@@ -24,5 +24,9 @@ inline constexpr auto LOC_BONE_WEIGHT = 6;
 inline constexpr auto BINDPOINT_MATRICES = 0;
 inline constexpr auto BINDPOINT_PBR_COMBO = 1;
 
+// Texture binding points
+// **********************
+inline constexpr auto TEXBIND_OVERLAY = 15;
+
 } // namespace Greenbell
 #endif
