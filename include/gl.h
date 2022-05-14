@@ -272,8 +272,5 @@ inline void Clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
-void ShowSystemInfo(); // In .cpp file
-void ShowMemoryInfo(); // In .cpp file
-
 } // namespace Greenbell::GL
 #endif
