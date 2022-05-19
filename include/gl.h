@@ -243,6 +243,21 @@ typedef ShaderObject<GL_GEOMETRY_SHADER> GeometryShader;
 typedef ShaderObject<GL_TESS_CONTROL_SHADER> TessControlShader;
 typedef ShaderObject<GL_TESS_EVALUATION_SHADER> TessEvaluationShader;
 
+// Indirect draw structures
+struct DAIC {
+    GLuint vertex_count{0};
+    GLuint instance_count{1};
+    GLuint first_vertex{0};
+    GLuint base_instance{0};
+};
+struct DEIC {
+    GLuint index_count{0};
+    GLuint instance_count{1};
+    GLuint first_index{0};
+    GLint  base_vertex{0}; // OpenGL 4.5 spec says this is signed
+    GLuint base_instance{0};
+};
+
 // Misc wrapped functions
 // **********************
 inline void DepthTest(bool enable) noexcept {

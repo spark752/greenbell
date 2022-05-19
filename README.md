@@ -1,5 +1,5 @@
 # Greenbell
-A simple experimental OpenGL rendering engine using SDL2
+A simple experimental OpenGL rendering engine using SDL2 on Linux
 
 ## Requirements
 * C++17 compatible compiler (developed using Clang 11.0.1)
