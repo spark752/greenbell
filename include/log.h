@@ -2,6 +2,7 @@
 #ifndef GB_LOG_H
 #define GB_LOG_H
 
+#include "glad.h"
 #include <iostream>
 #include <string_view>
 
@@ -75,6 +76,11 @@ void WriteGLError(unsigned int error);
 // only checked once at the start of "Write" so having it suddenly
 // changed by another thread is not much of a problem.
 void SetLevel(LogLevel level);
+
+// Callback for use with glDebugMessageCallback
+void MessageCallback(GLenum source, GLenum type, GLuint id,
+        GLenum severity, GLsizei length, GLchar const* message,
+        void const* user_param);
 
 } // namespace Log
 } // namespace Greenbell

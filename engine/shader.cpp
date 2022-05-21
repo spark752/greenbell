@@ -58,7 +58,7 @@ void BuildOverlay(GLuint pid) {
 }
     
 void BuildOverlay(GLuint pid, std::string_view main) {
-    const auto vs = fmt::format(
+    const auto vs = fmt::format(FMT_STRING(
             "{}"
             "layout(location = {}) in vec2 position;\n"
             "layout(location = {}) in vec2 uv;\n"
@@ -66,15 +66,15 @@ void BuildOverlay(GLuint pid, std::string_view main) {
             "void main() {{\n"
             "  fuv=uv;\n"
             "  gl_Position=vec4(position.x,position.y,0.0,1.0);\n"
-            "}}\n", GLSL_VERSION, LOC_POSITION, LOC_TEX_COORD);
-    const auto fs = fmt::format(
+            "}}\n"), GLSL_VERSION, LOC_POSITION, LOC_TEX_COORD);
+    const auto fs = fmt::format(FMT_STRING(
             "{}"
             "out vec4 frag;\n"
             "in vec2 fuv;\n"
             "layout(binding = {}) uniform sampler2D tex;\n"
             "void main() {{\n"
             "{}"
-            "}}\n", GLSL_VERSION, TEXBIND_OVERLAY, main);
+            "}}\n"), GLSL_VERSION, TEXBIND_OVERLAY, main);
     Build(pid, vs, fs);
 }
 
