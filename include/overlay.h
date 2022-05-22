@@ -6,7 +6,7 @@
 
 namespace Greenbell {
 
-// Full window texture quad for overlays. Owns its own VAO & VBO because of the 
+// Full window texture quad for overlays. Owns its own VAO & VBO because of the
 // specialized vertex format used, but one instance can be created and ran
 // multiple times with different textures and shaders if needed.
 // CONSTRUCTOR MAKES OpenGL CALLS

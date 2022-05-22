@@ -39,15 +39,15 @@ inline constexpr auto LIMITER_500_FPS = std::chrono::microseconds(2000);
 
 struct WindowInfo {
     std::string title{"Greenbell"};
-    int32_t width{1280};
-    int32_t height{720};
-    int32_t x{SDL_WINDOWPOS_UNDEFINED};
-    int32_t y{SDL_WINDOWPOS_UNDEFINED};
+    std::int32_t width{1280};
+    std::int32_t height{720};
+    std::int32_t x{SDL_WINDOWPOS_UNDEFINED};
+    std::int32_t y{SDL_WINDOWPOS_UNDEFINED};
     bool fullscreen{false};
     bool vsync{false};
-    int32_t msaa{0};
-    int32_t ogl_major{OGL_MAJOR_DEFAULT};
-    int32_t ogl_minor{OGL_MINOR_DEFAULT};
+    std::int32_t msaa{0};
+    std::int32_t ogl_major{OGL_MAJOR_DEFAULT};
+    std::int32_t ogl_minor{OGL_MINOR_DEFAULT};
 };
 
 class SDLWindowWrapper; // Forward reference

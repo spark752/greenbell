@@ -23,6 +23,7 @@ inline constexpr auto PROGRAM_CLASS_TEMPLATE = 1;
 inline constexpr auto VAO_CLASS_TEMPLATE = 2;
 inline constexpr auto RBO_CLASS_TEMPLATE = 3;
 inline constexpr auto FBO_CLASS_TEMPLATE = 4;
+inline constexpr auto SAMPLER_CLASS_TEMPLATE = 5;
 template <int N>
 class GenericObject {
   public:
@@ -35,6 +36,8 @@ class GenericObject {
             glCreateVertexArrays(1, &id_);
         } else if constexpr (N == PROGRAM_CLASS_TEMPLATE) {
             id_ = glCreateProgram();
+        } else if constexpr (N == SAMPLER_CLASS_TEMPLATE) {
+            glCreateSamplers(1, &id_);
         } else {
             glCreateBuffers(1, &id_);
         }
@@ -54,6 +57,8 @@ class GenericObject {
             glDeleteVertexArrays(1, &id_);
         } else if constexpr (N == PROGRAM_CLASS_TEMPLATE) {
             glDeleteProgram(id_);
+        } else if constexpr (N == SAMPLER_CLASS_TEMPLATE) {
+            glDeleteSamplers(1, &id_);
         } else {
             glDeleteBuffers(1, &id_);
         }
@@ -83,6 +88,8 @@ class GenericObject {
                 glDeleteVertexArrays(1, &id_);
             } else if constexpr (N == PROGRAM_CLASS_TEMPLATE) {
                 glDeleteProgram(id_);
+            } else if constexpr (N == SAMPLER_CLASS_TEMPLATE) {
+                glDeleteSamplers(1, &id_);                
             } else {
                 glDeleteBuffers(1, &id_);
             }
@@ -136,6 +143,18 @@ class VAO : public GenericObject<VAO_CLASS_TEMPLATE> {
     }
 };
 
+// Class for owning a Sampler Object
+class SamplerObject : public GenericObject<SAMPLER_CLASS_TEMPLATE> {
+  public:
+    // Do not define ctor/dtor so all base class move/copy things will be used
+    void bind(GLuint texture_unit) const noexcept {
+        glBindSampler(texture_unit, id_);
+    }
+    void unbind(GLuint texture_unit) const noexcept {
+        glBindSampler(texture_unit, 0);
+    }
+};
+
 // Class for owning a shader Program Object
 class ProgramObject : public GenericObject<PROGRAM_CLASS_TEMPLATE> {
   public:
@@ -184,7 +203,7 @@ class ShaderObject {
     } // Move
     ShaderObject& operator=(ShaderObject&& source) noexcept {
         #ifdef DEBUG_WRAPPERS
-        fmt::print(FMT_STRING("ShaderObject assign {} replaced by {}\n"), id_, 
+        fmt::print(FMT_STRING("ShaderObject assign {} replaced by {}\n"), id_,
                 source.id_);
         #endif
         if (&source == this) return *this; // Self assignment

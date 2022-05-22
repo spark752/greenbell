@@ -26,6 +26,7 @@ inline constexpr auto BINDPOINT_PBR_COMBO = 1;
 
 // Texture binding points
 // **********************
+inline constexpr auto TEXBIND_POSTPROCESS = 14;
 inline constexpr auto TEXBIND_OVERLAY = 15;
 
 } // namespace Greenbell

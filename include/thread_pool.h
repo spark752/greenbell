@@ -25,7 +25,7 @@ class ThreadPool {
     ThreadPool& operator=(const ThreadPool& rhs) = delete;
     ThreadPool(ThreadPool&& rhs) = delete;
     ThreadPool& operator=(ThreadPool&& rhs) = delete;
-    
+
     // Dispatch has "copy job" and "move job" versions
     void dispatch(const job_t& op);
     void dispatch(job_t&& op);

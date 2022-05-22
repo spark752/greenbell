@@ -87,7 +87,7 @@ void MessageCallback(GLenum source, GLenum type, GLuint id,
             default: return "UNKNOWN";
         }
     }();
-    fmt::print(FMT_STRING("{} {} {} {}: {}\n"), src_str, type_str, 
+    fmt::print(FMT_STRING("{} {} {} {}: {}\n"), src_str, type_str,
             severity_str, id, message);
     if (type == GL_DEBUG_TYPE_ERROR) throw std::runtime_error("OpenGL Error");
 }

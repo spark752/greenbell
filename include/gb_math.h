@@ -11,6 +11,8 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wimplicit-int-float-conversion"
 #pragma clang diagnostic ignored "-Wfloat-equal"
+#pragma clang diagnostic ignored "-Wdouble-promotion"
+#pragma clang diagnostic ignored "-Wimplicit-float-conversion"
 #include "../gcem/include/gcem.hpp"
 #pragma clang diagnostic pop
 
@@ -147,6 +149,12 @@ constexpr Vec3 LinearColourTemperature(const float temperature) {
 
 constexpr Vec3 SRGBColourTemperature(const float temperature) {
     return TemperatureToColour(temperature, false);
+}
+
+constexpr float FocalToFOV(const float focal_length_mm) {
+    // Calculate Y axis field of view in radians
+    return (focal_length_mm < 0.1f) ? 3.141592653589f :
+            2.0f * gcem::atan(12.0f / focal_length_mm);
 }
 
 } // namespace Greenbell::Math

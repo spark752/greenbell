@@ -16,6 +16,8 @@ class SDLWindowWrapper {
         }
 
         // Attributes must be set before creating window
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, win_info.ogl_major);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, win_info.ogl_minor);
         if (win_info.msaa) {
@@ -27,9 +29,9 @@ class SDLWindowWrapper {
 
         // It may be necessary to call this:
         SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
-        // to allow calling "glEnable(GL_FRAMEBUFFER_SRGB)" if automatic 
-        // conversion from linear to sRGB is desired for the window. 
-        // This was causing context creation to fail with some drivers a few 
+        // to allow calling "glEnable(GL_FRAMEBUFFER_SRGB)" if automatic
+        // conversion from linear to sRGB is desired for the window.
+        // This was causing context creation to fail with some drivers a few
         // years ago and the glEnable command worked without it. But it seems
         // ok now?
 
